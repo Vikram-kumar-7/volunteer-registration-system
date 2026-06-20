@@ -1,0 +1,179 @@
+<%- include('../layouts/header') %>
+
+<div class="dashboard-header animate-fade-in">
+  <h1 class="dashboard-title">My Profile</h1>
+  <p class="dashboard-subtitle">Update your personal information, skills checklist, availability settings, and avatar.</p>
+</div>
+
+<div class="split-container animate-fade-in" style="display: grid; grid-template-columns: 1fr 1.8fr; gap: 2rem; align-items: start; margin-bottom: 3rem;">
+  
+  <!-- Left Side: Profile Picture Upload & Status Details -->
+  <div style="display: flex; flex-direction: column; gap: 2rem;">
+    
+    <!-- Profile Avatar Card -->
+    <div class="glass-card" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+      <div style="position: relative; width: 140px; height: 140px;">
+        <div style="
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: var(--primary-gradient);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 3rem;
+          border: 4px solid var(--border-glass);
+          box-shadow: var(--shadow-premium);
+          overflow: hidden;
+        ">
+          <% if (volunteer.profilePicture) { %>
+            <img src="<%= volunteer.profilePicture %>" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
+          <% } else { %>
+            <%= user.username.charAt(0).toUpperCase() %>
+          <% } %>
+        </div>
+      </div>
+      
+      <div>
+        <h3 style="font-size: 1.25rem; font-weight: 700;"><%= volunteer.fullName %></h3>
+        <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 0.25rem;"><%= volunteer.email %></p>
+      </div>
+
+      <!-- Avatar Upload Form -->
+      <form action="/user/profile/upload" method="POST" enctype="multipart/form-data" style="width: 100%; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+        <label class="form-label-standalone" style="font-size: 0.75rem; text-align: left;">Change Avatar Image</label>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: stretch;">
+          <input type="file" name="avatar" accept="image/*" required style="font-size: 0.8125rem; border: 1px dashed var(--border-glass); padding: 0.5rem; border-radius: 8px; cursor: pointer; color: var(--text-muted);">
+          <button type="submit" class="btn-submit" style="padding: 0.5rem; border-radius: 8px; font-size: 0.875rem; box-shadow: none;">
+            Upload Picture
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Quick Stats Card -->
+    <div class="glass-card" style="padding: 1.5rem;">
+      <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Settings Overview</h3>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem;">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Status:</span>
+          <span class="badge badge-<%= volunteer.status.toLowerCase() %>"><%= volunteer.status %></span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Experience:</span>
+          <strong style="color: var(--text-main); font-weight: 600;"><%= volunteer.experienceLevel %></strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Member Since:</span>
+          <strong style="color: var(--text-main); font-weight: 600;"><%= new Date(volunteer.createdAt).toLocaleDateString() %></strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right Side: Details Edit Form -->
+  <div class="glass-card">
+    <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; color: var(--accent-color); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Edit Profile Information</h2>
+    
+    <form id="profileForm" action="/user/profile" method="POST">
+      
+      <div class="form-grid">
+        
+        <!-- Phone Number -->
+        <div class="form-group floating filled validation-wrapper">
+          <input type="tel" name="phone" id="phone" class="form-input" required value="<%= volunteer.phone %>">
+          <label for="phone">Phone Number</label>
+        </div>
+
+        <!-- City -->
+        <div class="form-group floating filled validation-wrapper">
+          <input type="text" name="city" id="city" class="form-input" required value="<%= volunteer.city %>">
+          <label for="city">City Location</label>
+        </div>
+
+        <!-- Availability Selection -->
+        <div class="form-group">
+          <label class="form-label-standalone">Availability schedule *</label>
+          <select name="availability" id="availability" class="form-input" required>
+            <option value="Weekdays" <%= volunteer.availability === 'Weekdays' ? 'selected' : '' %>>Weekdays</option>
+            <option value="Weekends" <%= volunteer.availability === 'Weekends' ? 'selected' : '' %>>Weekends</option>
+            <option value="Both" <%= volunteer.availability === 'Both' ? 'selected' : '' %>>Both (Flexible)</option>
+          </select>
+        </div>
+
+        <!-- Experience Level Selection -->
+        <div class="form-group">
+          <label class="form-label-standalone">Experience Level *</label>
+          <select name="experienceLevel" id="experienceLevel" class="form-input" required>
+            <option value="Beginner" <%= volunteer.experienceLevel === 'Beginner' ? 'selected' : '' %>>Beginner</option>
+            <option value="Intermediate" <%= volunteer.experienceLevel === 'Intermediate' ? 'selected' : '' %>>Intermediate</option>
+            <option value="Advanced" <%= volunteer.experienceLevel === 'Advanced' ? 'selected' : '' %>>Advanced</option>
+          </select>
+        </div>
+
+        <!-- Emergency Contact -->
+        <div class="form-group-full form-group floating filled validation-wrapper">
+          <input type="text" name="emergencyContact" id="emergencyContact" class="form-input" required value="<%= volunteer.emergencyContact %>">
+          <label for="emergencyContact">Emergency Contact (Name & Phone Number)</label>
+        </div>
+
+        <!-- Skills Checklist Selection -->
+        <div class="form-group-full" style="margin-bottom: 0.5rem;">
+          <label id="skillsLabel" class="form-label-standalone">Skills / Areas of Interest *</label>
+          <div class="skills-tags-container">
+            <% skillsList.forEach(function(skill) { 
+              const isChecked = volunteer.skills && volunteer.skills.includes(skill);
+            %>
+              <input type="checkbox" name="skills" value="<%= skill %>" id="skill_<%= skill %>" class="skill-tag-checkbox" <%= isChecked ? 'checked' : '' %>>
+              <label for="skill_<%= skill %>" class="skill-tag-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <%= skill %>
+              </label>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Motivation Statement -->
+        <div class="form-group-full form-group floating filled validation-wrapper">
+          <textarea name="motivation" id="motivation" class="form-input" required placeholder="Explain your motivation for volunteering with us" style="min-height: 100px;"><%= volunteer.motivation %></textarea>
+          <label for="motivation">Explain your motivation for volunteering with us</label>
+        </div>
+
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn-submit" style="width: auto; padding: 0.875rem 2rem;">
+        <span>Save Changes</span>
+      </button>
+
+    </form>
+  </div>
+
+</div>
+
+<script>
+  // Enable floating label behaviors & inputs filtering for profile form
+  document.addEventListener('DOMContentLoaded', () => {
+    // Skills checklist validation client-side
+    const form = document.getElementById('profileForm');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        const skillsChecked = form.querySelectorAll('input[name="skills"]:checked');
+        const skillsLabel = document.getElementById('skillsLabel');
+        if (skillsChecked.length === 0) {
+          e.preventDefault();
+          alert('Please select at least one skill/area of interest.');
+          if (skillsLabel) {
+            skillsLabel.style.color = 'var(--color-danger)';
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<%- include('../layouts/footer') %>

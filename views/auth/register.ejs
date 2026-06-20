@@ -1,0 +1,112 @@
+<%- include('../partials/head') %>
+
+<!-- Standalone Flash Messages for Login/Register Pages -->
+<% if (success_msg && success_msg.length > 0) { %>
+  <div class="flash-message flash-message-success">
+    <span class="flash-message-content"><%= success_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<% if (error_msg && error_msg.length > 0) { %>
+  <div class="flash-message flash-message-error">
+    <span class="flash-message-content"><%= error_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<% if (error && error.length > 0) { %>
+  <div class="flash-message flash-message-error">
+    <span class="flash-message-content"><%= error %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<div class="split-container">
+  <!-- Left Graphic Column -->
+  <div class="split-left">
+    <div class="illustration-wrapper">
+      <!-- High-fidelity CSS Art SVG representing database setup and access configuration -->
+      <svg class="illustration-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shield outlining protection -->
+        <path d="M100 30l60 25v55c0 35-25 60-60 70-35-10-60-35-60-70V55l60-25z" stroke="url(#indigoGradient)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M100 40l50 20v45c0 30-20 50-50 60V40z" fill="url(#cyanGradient)" opacity="0.1"/>
+        
+        <!-- Keyhole/Lock icon -->
+        <circle cx="100" cy="95" r="12" fill="url(#indigoGradient)"/>
+        <path d="M100 107v20M94 127h12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="100" cy="95" r="4" fill="#090d16"/>
+        
+        <!-- Tech design stars -->
+        <path d="M50 80h4M146 80h4M100 162h4" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+      <h1 class="illustration-title">Configure Hub</h1>
+      <p class="illustration-desc">Join our secure management system. Access core statistics, search registrations, approve pending candidates, and export reports safely.</p>
+    </div>
+  </div>
+
+  <!-- Right Form Column -->
+  <div class="split-right">
+    <div class="auth-form-card glass-card">
+      <div class="auth-header">
+        <h2 class="auth-title">Admin Registration</h2>
+        <p class="auth-subtitle">Establish your administrator profile credentials</p>
+      </div>
+
+      <!-- Server-Side Validation Errors -->
+      <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+        <div class="form-errors-alert">
+          <ul class="form-errors-list">
+            <% errors.forEach(function(error) { %>
+              <li><%= error.msg %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form action="/register" method="POST">
+        <!-- Username Input -->
+        <div class="form-group floating" style="margin-bottom: 1.25rem;">
+          <input type="text" name="username" id="username" class="form-input" required value="<%= typeof username !== 'undefined' ? username : '' %>" autocomplete="username">
+          <label for="username">Username</label>
+        </div>
+
+        <!-- Email Input -->
+        <div class="form-group floating" style="margin-bottom: 1.25rem;">
+          <input type="email" name="email" id="email" class="form-input" required value="<%= typeof email !== 'undefined' ? email : '' %>" autocomplete="email">
+          <label for="email">Email Address</label>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group floating" style="margin-bottom: 1.25rem;">
+          <input type="password" name="password" id="password" class="form-input" required autocomplete="new-password">
+          <label for="password">Password (6+ chars)</label>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="form-group floating" style="margin-bottom: 1.25rem;">
+          <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" required autocomplete="new-password">
+          <label for="confirmPassword">Confirm Password</label>
+        </div>
+
+        <!-- Admin Secret Code Input -->
+        <div class="form-group floating" style="margin-bottom: 2rem;">
+          <input type="password" name="secretCode" id="secretCode" class="form-input" required value="<%= typeof secretCode !== 'undefined' ? secretCode : '' %>">
+          <label for="secretCode">Admin Secret Code</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">
+          <span>Create Account</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+
+      <p class="auth-footer-text">
+        Already registered? <a href="/login">Sign In instead</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

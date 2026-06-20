@@ -1,0 +1,134 @@
+<aside id="sidebar" class="sidebar-container">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+    <span>VOLUNTEER HUB</span>
+  </div>
+
+  <ul class="sidebar-menu">
+    <% if (user && user.role === 'admin') { %>
+      <li class="sidebar-menu-item">
+        <a href="/admin/dashboard" class="sidebar-link <%= currentPath === '/admin/dashboard' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-menu-item">
+        <a href="/admin/volunteers" class="sidebar-link <%= currentPath.startsWith('/admin/volunteers') ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Volunteers</span>
+        </a>
+      </li>
+
+      <li class="sidebar-menu-item">
+        <a href="/admin/events" class="sidebar-link <%= currentPath.startsWith('/admin/events') ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Events</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-menu-item">
+        <a href="/admin/reports" class="sidebar-link <%= currentPath === '/admin/reports' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Reports & Analytics</span>
+        </a>
+      </li>
+    <% } else if (user && user.role === 'volunteer') { %>
+      <li class="sidebar-menu-item">
+        <a href="/user/dashboard" class="sidebar-link <%= currentPath === '/user/dashboard' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="sidebar-menu-item">
+        <a href="/user/events" class="sidebar-link <%= currentPath === '/user/events' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Browse Events</span>
+        </a>
+      </li>
+
+      <li class="sidebar-menu-item">
+        <a href="/user/application" class="sidebar-link <%= currentPath === '/user/application' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Track Application</span>
+        </a>
+      </li>
+
+      <li class="sidebar-menu-item">
+        <a href="/user/history" class="sidebar-link <%= currentPath === '/user/history' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>Activity History</span>
+        </a>
+      </li>
+
+      <li class="sidebar-menu-item">
+        <a href="/user/profile" class="sidebar-link <%= currentPath === '/user/profile' ? 'active' : '' %>">
+          <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>My Profile</span>
+        </a>
+      </li>
+    <% } %>
+  </ul>
+
+  <div class="sidebar-footer">
+    <% if (user) { %>
+      <div class="user-profile-widget">
+        <div class="user-avatar">
+          <% if (typeof volunteer !== 'undefined' && volunteer && volunteer.profilePicture) { %>
+            <img src="<%= volunteer.profilePicture %>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          <% } else { %>
+            <%= user.username.charAt(0).toUpperCase() %>
+          <% } %>
+        </div>
+        <div class="user-details">
+          <span class="user-name"><%= user.username %></span>
+          <span class="user-role"><%= user.role === 'admin' ? 'Administrator' : 'Volunteer' %></span>
+          <a href="/logout" style="font-size: 0.75rem; color: var(--color-danger); margin-top: 0.25rem; font-weight: 600;">Log Out</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</aside>

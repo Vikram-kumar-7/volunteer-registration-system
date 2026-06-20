@@ -1,0 +1,88 @@
+<%- include('../layouts/header') %>
+
+<div class="dashboard-header animate-fade-in">
+  <h1 class="dashboard-title">Activity History</h1>
+  <p class="dashboard-subtitle">Track your community impact, logged volunteer hours, and joined event milestones.</p>
+</div>
+
+<!-- Grid containing Hours summary and chronological events list -->
+<div class="split-container animate-fade-in" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start; margin-bottom: 3rem;">
+  
+  <!-- Left Side: Logged Hours Summary & Detail List -->
+  <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-success);">Verified Volunteering Hours</h2>
+    
+    <% 
+      const totalHours = hours.reduce((sum, h) => sum + h.hoursWorked, 0);
+    %>
+    
+    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+      <span style="font-size: 0.9375rem; color: var(--text-muted); font-weight: 500;">Total Contributions:</span>
+      <strong style="font-size: 1.5rem; color: var(--color-success); font-weight: 800;"><%= totalHours %> Hours</strong>
+    </div>
+
+    <% if (hours && hours.length > 0) { %>
+      <div class="table-wrapper">
+        <table class="glass-table">
+          <thead>
+            <tr>
+              <th>Event Title</th>
+              <th>Logged Date</th>
+              <th style="width: 100px; text-align: right;">Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% hours.forEach(function(h) { %>
+              <% if (h.eventId) { %>
+                <tr>
+                  <td style="font-weight: 600;"><%= h.eventId.title %></td>
+                  <td style="font-size: 0.8125rem; color: var(--text-muted);"><%= new Date(h.createdAt).toLocaleDateString() %></td>
+                  <td style="text-align: right; font-weight: 700; color: var(--color-success);"><%= h.hoursWorked %> hrs</td>
+                </tr>
+              <% } %>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">No volunteering hours verified yet. Join events to get started!</p>
+    <% } %>
+  </div>
+
+  <!-- Right Side: Joined Events Timeline -->
+  <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--accent-color);">Joined Cause Engagements</h2>
+    
+    <% if (joinedEvents && joinedEvents.length > 0) { %>
+      <div style="display: flex; flex-direction: column; gap: 1rem; border-left: 2px dashed var(--border-glass); padding-left: 1.25rem; margin-left: 0.5rem; margin-top: 0.5rem;">
+        <% joinedEvents.forEach(function(e) { %>
+          <div style="position: relative; padding-bottom: 0.25rem;">
+            <div style="
+              position: absolute;
+              left: -25px;
+              top: 5px;
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: var(--accent-color);
+              box-shadow: 0 0 6px var(--accent-color);
+            "></div>
+            
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.25rem;">
+              <h4 style="font-weight: 600; font-size: 0.875rem;"><%= e.title %></h4>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                <span>Event Date: <%= new Date(e.date).toLocaleDateString() %></span>
+                <span class="badge" style="font-size: 0.625rem; padding: 0.1rem 0.4rem; background: <%= e.status === 'Completed' ? 'var(--color-success-bg)' : 'rgba(255,255,255,0.05)' %>; color: <%= e.status === 'Completed' ? 'var(--color-success)' : 'var(--text-muted)' %>"><%= e.status %></span>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">You have not registered for any events yet.</p>
+    <% } %>
+  </div>
+
+</div>
+
+<%- include('../layouts/footer') %>

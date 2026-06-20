@@ -1,0 +1,165 @@
+<%- include('../layouts/header') %>
+
+<!-- Header and Controls -->
+<div class="dashboard-header animate-fade-in">
+  <h1 class="dashboard-title">Volunteers</h1>
+  <p class="dashboard-subtitle">Manage, review, approve, or delete volunteer registration records.</p>
+</div>
+
+<!-- Filters Panel -->
+<div class="glass-card animate-fade-in" style="margin-bottom: 2rem; padding: 1.5rem;">
+  <form action="/admin/volunteers" method="GET">
+    <div class="filters-container">
+      
+      <!-- Search Input -->
+      <div class="filter-group">
+        <label for="search" class="filter-label">Search</label>
+        <input type="text" name="search" id="search" placeholder="Name, email, or city..." class="filter-input" value="<%= filters.search %>">
+      </div>
+
+      <!-- Skill Filter -->
+      <div class="filter-group">
+        <label for="skill" class="filter-label">Skill</label>
+        <select name="skill" id="skill" class="filter-input">
+          <option value="">All Skills</option>
+          <% ['Teaching', 'Medical', 'Tech', 'Construction', 'Cooking', 'Logistics'].forEach(function(s) { %>
+            <option value="<%= s %>" <%= filters.skill === s ? 'selected' : '' %>><%= s %></option>
+          <% }); %>
+        </select>
+      </div>
+
+      <!-- City Filter -->
+      <div class="filter-group">
+        <label for="city" class="filter-label">City</label>
+        <select name="city" id="city" class="filter-input">
+          <option value="">All Cities</option>
+          <% cities.forEach(function(c) { %>
+            <option value="<%= c %>" <%= filters.city.toLowerCase() === c.toLowerCase() ? 'selected' : '' %>><%= c %></option>
+          <% }); %>
+        </select>
+      </div>
+
+      <!-- Availability Filter -->
+      <div class="filter-group">
+        <label for="availability" class="filter-label">Availability</label>
+        <select name="availability" id="availability" class="filter-input">
+          <option value="">Any Time</option>
+          <option value="Weekdays" <%= filters.availability === 'Weekdays' ? 'selected' : '' %>>Weekdays</option>
+          <option value="Weekends" <%= filters.availability === 'Weekends' ? 'selected' : '' %>>Weekends</option>
+          <option value="Both" <%= filters.availability === 'Both' ? 'selected' : '' %>>Both</option>
+        </select>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <label for="status" class="filter-label">Status</label>
+        <select name="status" id="status" class="filter-input">
+          <option value="">All Statuses</option>
+          <option value="Pending" <%= filters.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+          <option value="Approved" <%= filters.status === 'Approved' ? 'selected' : '' %>>Approved</option>
+          <option value="Rejected" <%= filters.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+          <option value="Assigned" <%= filters.status === 'Assigned' ? 'selected' : '' %>>Assigned</option>
+          <option value="Completed" <%= filters.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+        </select>
+      </div>
+
+      <!-- Actions (Submit & Reset) -->
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn-submit" style="height: 42px; padding: 0.5rem 1.25rem;">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Apply</span>
+        </button>
+        
+        <a href="/admin/volunteers" class="btn-reset-filters">Reset</a>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<!-- Volunteer Directory Table -->
+<div class="glass-card animate-fade-in">
+  <% if (volunteers && volunteers.length > 0) { %>
+    <div class="table-wrapper">
+      <table class="glass-table">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>City</th>
+            <th>Skills</th>
+            <th>Availability</th>
+            <th>Status</th>
+            <th style="width: 120px; text-align: center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% volunteers.forEach(function(volunteer) { %>
+            <tr>
+              <td style="font-weight: 600;"><%= volunteer.fullName %></td>
+              <td><%= volunteer.email %></td>
+              <td><%= volunteer.phone %></td>
+              <td><%= volunteer.city %></td>
+              <td>
+                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                  <% volunteer.skills.forEach(function(skill) { %>
+                    <span style="font-size: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 0.1rem 0.4rem; border-radius: 4px;">
+                      <%= skill %>
+                    </span>
+                  <% }); %>
+                </div>
+              </td>
+              <td><%= volunteer.availability %></td>
+              <td>
+                <span class="badge badge-<%= volunteer.status.toLowerCase() %>">
+                  <%= volunteer.status %>
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell" style="justify-content: center;">
+                  <!-- View Details -->
+                  <a href="/admin/volunteers/<%= volunteer.id %>" class="btn-icon btn-icon-view" data-tooltip="View Details" aria-label="View volunteer details">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </a>
+                  
+                  <!-- Inline Delete (using method override) -->
+                  <form action="/admin/volunteers/<%= volunteer.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this volunteer application permanently?');" style="display: inline;">
+                    <button type="submit" class="btn-icon btn-icon-delete" data-tooltip="Delete Permanent" aria-label="Delete volunteer application">
+                      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <!-- Empty State -->
+    <div class="empty-state">
+      <svg class="empty-illustration" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+      </svg>
+      <h3 class="empty-title">No matching volunteers</h3>
+      <p class="empty-desc">No registration profiles matched the filters or search parameters you selected.</p>
+      <a href="/admin/volunteers" class="btn-cta">
+        <span>Reset Filter Criteria</span>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../layouts/footer') %>

@@ -1,0 +1,111 @@
+<%- include('../layouts/header') %>
+
+<div class="dashboard-header animate-fade-in">
+  <h1 class="dashboard-title">Track Application</h1>
+  <p class="dashboard-subtitle">Track your application pipeline status, history logs, and review details in real-time.</p>
+</div>
+
+<!-- Visual Status Progress Bar -->
+<div class="glass-card animate-fade-in" style="margin-bottom: 2.5rem; padding: 2.5rem 2rem;">
+  <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; color: var(--accent-color);">Status Pipeline</h2>
+  
+  <% 
+    const statuses = ['Pending', 'Approved', 'Assigned', 'Completed'];
+    let currentIdx = statuses.indexOf(volunteer.status);
+    if (volunteer.status === 'Rejected') {
+      currentIdx = -1; // Special rejected handling
+    }
+  %>
+
+  <% if (volunteer.status === 'Rejected') { %>
+    <div style="background: var(--color-danger-bg); border: 1px solid var(--color-danger); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+      <svg width="24" height="24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+      <div>
+        <h4 style="font-weight: 700; color: var(--color-danger); margin-bottom: 0.25rem;">Application Rejected</h4>
+        <p style="font-size: 0.875rem; color: var(--text-muted);">Your volunteer registration application was reviewed and rejected. Please email administrative support if you have questions or want to appeal this decision.</p>
+      </div>
+    </div>
+  <% } else { %>
+    <!-- Pipeline Progress Elements -->
+    <div class="step-progressbar-container" style="margin: 2.5rem 0 1rem 0;">
+      
+      <!-- Dynamic progress line filling -->
+      <%
+        const percentage = currentIdx >= 0 ? (currentIdx / (statuses.length - 1)) * 100 : 0;
+      %>
+      <div class="step-progress-line" style="width: <%= percentage %>%; background: var(--primary-gradient);"></div>
+      
+      <% statuses.forEach(function(st, idx) { 
+        let isActive = idx === currentIdx;
+        let isCompleted = idx < currentIdx;
+      %>
+        <div class="step-node <%= isActive ? 'active' : (isCompleted ? 'completed' : '') %>" style="position: relative;">
+          <!-- Node number or check -->
+          <% if (isCompleted) { %>
+            ✓
+          <% } else { %>
+            <%= idx + 1 %>
+          <% } %>
+          
+          <span class="step-label" style="font-weight: 600; font-size: 0.8125rem; width: 100px; text-align: center; bottom: -30px; top: auto; transform: translateX(-50%); left: 50%;">
+            <%= st %>
+          </span>
+        </div>
+      <% }); %>
+
+    </div>
+    
+    <div style="margin-top: 3.5rem; text-align: center; font-size: 0.9375rem; color: var(--text-muted);">
+      Current Pipeline Step: <strong style="color: var(--text-main); font-weight: 700; text-transform: uppercase;"><%= volunteer.status %></strong>
+    </div>
+  <% } %>
+
+</div>
+
+<!-- Status Transition Audit Log Details -->
+<div class="glass-card animate-fade-in">
+  <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-main);">Application Status History Log</h2>
+  
+  <% if (volunteer.history && volunteer.history.length > 0) { %>
+    <div style="display: flex; flex-direction: column; gap: 1rem; border-left: 2px dashed var(--border-glass); padding-left: 1.5rem; margin-left: 0.5rem; margin-top: 1rem;">
+      <% volunteer.history.reverse().forEach(function(h) { %>
+        <div style="position: relative; padding-bottom: 0.5rem;">
+          <!-- Dot bullet on the timeline line -->
+          <div style="
+            position: absolute;
+            left: -29px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: <%= 
+              h.status === 'Approved' ? 'var(--color-success)' : 
+              (h.status === 'Rejected' ? 'var(--color-danger)' : 
+              (h.status === 'Completed' ? '#06b6d4' : 'var(--color-warning)')); 
+            %>;
+            box-shadow: 0 0 8px currentColor;
+          "></div>
+          
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.875rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <span style="font-weight: 700; font-size: 0.9375rem;">Status changed to: 
+                <span class="badge badge-<%= h.status.toLowerCase() %>" style="font-size: 0.75rem; margin-left: 0.5rem;"><%= h.status %></span>
+              </span>
+            </div>
+            <div style="font-size: 0.8125rem; color: var(--text-muted);">
+              Changed on: <strong style="color: var(--text-main); font-weight: 500;"><%= new Date(h.changedAt).toLocaleString() %></strong>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <p style="color: var(--text-muted); font-size: 0.875rem;">No transition logs found.</p>
+  <% } %>
+</div>
+
+<%- include('../layouts/footer') %>

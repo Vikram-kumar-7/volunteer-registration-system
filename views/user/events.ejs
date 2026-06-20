@@ -1,0 +1,100 @@
+<%- include('../layouts/header') %>
+
+<div class="dashboard-header animate-fade-in">
+  <h1 class="dashboard-title">Volunteer Events</h1>
+  <p class="dashboard-subtitle">Browse and join open community volunteer events. Coordinate details and log hours.</p>
+</div>
+
+<!-- Enforce Approved Rule Header banner if pending -->
+<% if (volunteer.status !== 'Approved') { %>
+  <div class="glass-card animate-fade-in" style="margin-bottom: 2.5rem; border-left: 5px solid var(--color-warning); background: var(--color-warning-bg); padding: 1.25rem 1.5rem;">
+    <div style="display: flex; gap: 0.75rem; align-items: center;">
+      <svg width="20" height="20" fill="none" stroke="var(--color-warning)" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
+      <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-warning);">
+        Your application is currently "<%= volunteer.status %>". You must be Approved by administrators before you can join volunteer events.
+      </p>
+    </div>
+  </div>
+<% } %>
+
+<!-- Events Grid Container -->
+<div class="animate-fade-in">
+  <% if (events && events.length > 0) { %>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+      <% events.forEach(function(event) { %>
+        <div class="glass-card" style="padding: 1.75rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem; min-height: 280px; position: relative;">
+          
+          <!-- Title & Badges -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span class="badge" style="
+                background: <%= event.status === 'Open' ? 'var(--color-success-bg)' : 'var(--color-danger-bg)' %>;
+                color: <%= event.status === 'Open' ? 'var(--color-success)' : 'var(--color-danger)' %>;
+              ">
+                <%= event.status %>
+              </span>
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">
+                Spots: <%= event.joinedVolunteers.length %> / <%= event.capacity %>
+              </span>
+            </div>
+            
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;"><%= event.title %></h3>
+            <p style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+              <%= event.description %>
+            </p>
+          </div>
+
+          <!-- Bottom Meta Details and Action -->
+          <div>
+            <div style="border-top: 1px solid var(--border-glass); padding-top: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem;">
+              <span style="color: var(--text-muted);">Event Date:</span>
+              <strong style="color: var(--accent-color); font-weight: 600;">
+                <%= new Date(event.date).toLocaleDateString('en-US', { dateStyle: 'medium' }) %>
+              </strong>
+            </div>
+
+            <!-- Action Join Button -->
+            <% if (volunteer.status === 'Approved') { %>
+              <% if (event.joinedVolunteers.includes(user._id)) { %>
+                <button class="btn-submit" disabled style="background: rgba(16,185,129,0.1); border: 1.5px solid rgba(16,185,129,0.3); color: var(--color-success); box-shadow: none; cursor: default; transform: none; font-weight: 700; pointer-events: none;">
+                  ✓ Already Joined
+                </button>
+              <% } else if (event.status !== 'Open') { %>
+                <button class="btn-submit" disabled style="background: rgba(255,255,255,0.03); border: 1.5px solid var(--border-glass); color: var(--text-muted); box-shadow: none; cursor: not-allowed; transform: none; pointer-events: none;">
+                  Closed
+                </button>
+              <% } else if (event.joinedVolunteers.length >= event.capacity) { %>
+                <button class="btn-submit" disabled style="background: rgba(239,68,68,0.1); border: 1.5px solid rgba(239,68,68,0.3); color: var(--color-danger); box-shadow: none; cursor: not-allowed; transform: none; pointer-events: none;">
+                  At Full Capacity
+                </button>
+              <% } else { %>
+                <form action="/user/events/<%= event._id %>/join" method="POST">
+                  <button type="submit" class="btn-submit">
+                    Join Event
+                  </button>
+                </form>
+              <% } %>
+            <% } else { %>
+              <button class="btn-submit" disabled style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-glass); color: var(--text-muted); box-shadow: none; cursor: not-allowed; transform: none; pointer-events: none;">
+                Awaiting Profile Approval
+              </button>
+            <% } %>
+          </div>
+
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="glass-card" style="padding: 4rem; text-align: center; margin-bottom: 3rem;">
+      <svg fill="none" stroke="var(--text-muted)" stroke-width="1.5" viewBox="0 0 24 24" style="width: 48px; height: 48px; margin: 0 auto 1.5rem; opacity: 0.4;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">No Events Published</h3>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">There are no active community volunteer events listed at this time. Check back later!</p>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../layouts/footer') %>

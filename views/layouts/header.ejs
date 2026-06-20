@@ -1,0 +1,35 @@
+<%- include('../partials/head') %>
+
+<!-- Mobile Navbar -->
+<%- include('../partials/navbar') %>
+
+<!-- Global Admin Layout Container -->
+<div class="admin-layout">
+  
+  <!-- Fixed Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Scrollable Content Area -->
+  <main class="main-content">
+    
+    <!-- Flash Messages and Action Notifications -->
+    <% if (success_msg && success_msg.length > 0) { %>
+      <div class="flash-message flash-message-success">
+        <span class="flash-message-content"><%= success_msg %></span>
+        <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+      </div>
+    <% } %>
+    
+    <% if (error_msg && error_msg.length > 0) { %>
+      <div class="flash-message flash-message-error">
+        <span class="flash-message-content"><%= error_msg %></span>
+        <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+      </div>
+    <% } %>
+    
+    <% if (error && error.length > 0) { %>
+      <div class="flash-message flash-message-error">
+        <span class="flash-message-content"><%= error %></span>
+        <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+      </div>
+    <% } %>

@@ -1,0 +1,106 @@
+<%- include('../partials/head') %>
+
+<!-- Standalone Flash Messages for Login/Register Pages -->
+<% if (success_msg && success_msg.length > 0) { %>
+  <div class="flash-message flash-message-success">
+    <span class="flash-message-content"><%= success_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<% if (error_msg && error_msg.length > 0) { %>
+  <div class="flash-message flash-message-error">
+    <span class="flash-message-content"><%= error_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<% if (error && error.length > 0) { %>
+  <div class="flash-message flash-message-error">
+    <span class="flash-message-content"><%= error %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<div class="split-container">
+  <!-- Left Graphic Column -->
+  <div class="split-left">
+    <div class="illustration-wrapper">
+      <!-- High-fidelity CSS Art SVG representing global connectivity and teamwork -->
+      <svg class="illustration-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Connecting circles/nodes -->
+        <circle cx="100" cy="100" r="50" stroke="url(#indigoGradient)" stroke-width="2" stroke-dasharray="4 4"/>
+        <circle cx="100" cy="100" r="70" stroke="url(#cyanGradient)" stroke-width="1" opacity="0.3"/>
+        
+        <!-- Center node -->
+        <circle cx="100" cy="100" r="24" fill="url(#indigoGradient)" />
+        <path d="M96 104c0-4.4 3.6-8 8-8s8 3.6 8 8M104 94a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        
+        <!-- Surrounding volunteer nodes -->
+        <!-- Node 1: Top Left -->
+        <g transform="translate(50, 50)">
+          <circle cx="10" cy="10" r="16" fill="rgba(99, 102, 241, 0.15)" stroke="var(--accent-color)" stroke-width="1.5"/>
+          <path d="M6 14a4 4 0 0 1 8 0" stroke="var(--accent-color)" stroke-width="1.5"/>
+          <circle cx="10" cy="7" r="2.5" fill="var(--accent-color)"/>
+        </g>
+        
+        <!-- Node 2: Top Right -->
+        <g transform="translate(130, 45)">
+          <circle cx="10" cy="10" r="14" fill="rgba(6, 182, 212, 0.15)" stroke="#06b6d4" stroke-width="1.5"/>
+          <path d="M6 14a4 4 0 0 1 8 0" stroke="#06b6d4" stroke-width="1.5"/>
+          <circle cx="10" cy="7" r="2.5" fill="#06b6d4"/>
+        </g>
+        
+        <!-- Node 3: Bottom Center -->
+        <g transform="translate(90, 145)">
+          <circle cx="10" cy="10" r="15" fill="rgba(139, 92, 246, 0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
+          <path d="M6 14a4 4 0 0 1 8 0" stroke="#8b5cf6" stroke-width="1.5"/>
+          <circle cx="10" cy="7" r="2.5" fill="#8b5cf6"/>
+        </g>
+        
+        <!-- Connection lines -->
+        <line x1="68" y1="72" x2="88" y2="88" stroke="#6366f1" stroke-width="1.5" opacity="0.6"/>
+        <line x1="132" y1="71" x2="114" y2="89" stroke="#06b6d4" stroke-width="1.5" opacity="0.6"/>
+        <line x1="100" y1="145" x2="100" y2="124" stroke="#8b5cf6" stroke-width="1.5" opacity="0.6"/>
+      </svg>
+      <h1 class="illustration-title">Empower Communities</h1>
+      <p class="illustration-desc">Join our volunteer network, connect with meaningful events, track your impact, and build a stronger community together.</p>
+    </div>
+  </div>
+
+  <!-- Right Form Column -->
+  <div class="split-right">
+    <div class="auth-form-card glass-card">
+      <div class="auth-header">
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Sign in to access your dashboard</p>
+      </div>
+
+      <form action="/login" method="POST">
+        <!-- Email Input -->
+        <div class="form-group floating" style="margin-bottom: 1.5rem;">
+          <input type="email" name="email" id="email" class="form-input" required autocomplete="email">
+          <label for="email">Email Address</label>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group floating" style="margin-bottom: 2rem;">
+          <input type="password" name="password" id="password" class="form-input" required autocomplete="current-password">
+          <label for="password">Password</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">
+          <span>Sign In</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+
+      <p class="auth-footer-text">
+        New volunteer? <a href="/volunteer/register">Register here</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

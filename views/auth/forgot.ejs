@@ -1,0 +1,61 @@
+<%- include('../partials/head') %>
+
+<!-- Standalone Flash Messages for Login/Register Pages -->
+<% if (success_msg && success_msg.length > 0) { %>
+  <div class="flash-message flash-message-success">
+    <span class="flash-message-content"><%= success_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<% if (error_msg && error_msg.length > 0) { %>
+  <div class="flash-message flash-message-error">
+    <span class="flash-message-content"><%= error_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<div class="split-container">
+  <!-- Left Column -->
+  <div class="split-left">
+    <div class="illustration-wrapper">
+      <svg class="illustration-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="50" stroke="url(#indigoGradient)" stroke-width="2" stroke-dasharray="4 4"/>
+        <path d="M100 60v40m0 20h.01" stroke="var(--accent-color)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="24" stroke="url(#cyanGradient)" stroke-width="1.5"/>
+      </svg>
+      <h1 class="illustration-title">Recover Credentials</h1>
+      <p class="illustration-desc">Enter your email and we'll send you instructions to securely reset your password.</p>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="split-right">
+    <div class="auth-form-card glass-card">
+      <div class="auth-header">
+        <h2 class="auth-title">Forgot Password</h2>
+        <p class="auth-subtitle">Verify your email to reset your credentials</p>
+      </div>
+
+      <form action="/forgot-password" method="POST">
+        <!-- Email Input -->
+        <div class="form-group floating" style="margin-bottom: 2rem;">
+          <input type="email" name="email" id="email" class="form-input" required autocomplete="email">
+          <label for="email">Email Address</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">
+          <span>Send Reset Link</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+
+      <p class="auth-footer-text">
+        Remembered your credentials? <a href="/login">Back to Login</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

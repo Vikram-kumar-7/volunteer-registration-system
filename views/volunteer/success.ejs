@@ -1,0 +1,35 @@
+<%- include('../partials/head') %>
+
+<!-- Confetti falling canvas overlays -->
+<div id="confettiContainer" class="confetti-canvas-container"></div>
+
+<div class="public-registration-container">
+  <div class="success-card glass-card animate-fade-in" style="z-index: 10; position: relative;">
+    
+    <!-- Success Badge Logo -->
+    <div class="success-icon-wrapper">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    </div>
+
+    <h1 class="success-title">Application Submitted!</h1>
+    
+    <p class="success-desc">
+      Thank you for registering. Your profile application has been safely stored. Our volunteer coordinators will review your skills and availability parameters. You will receive an email confirmation shortly.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 1rem;">
+      <a href="/volunteer/register" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+        </svg>
+        <span>Register Another</span>
+      </a>
+    </div>
+    
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,350 @@
+<%- include('../layouts/header') %>
+
+<!-- Dashboard Header -->
+<div class="dashboard-header animate-fade-in">
+  <h1 class="dashboard-title">Dashboard</h1>
+  <p class="dashboard-subtitle">Overview of registrations, availability metrics, and skills distribution.</p>
+</div>
+
+<!-- Stat Cards Grid -->
+<div class="stats-grid animate-fade-in">
+  
+  <!-- Active Volunteers -->
+  <div class="glass-card stat-card stat-card-total interactive">
+    <div class="stat-label">Active Volunteers</div>
+    <div class="stat-value"><%= activeVolunteers %></div>
+    <div class="stat-meta">Approved Status</div>
+    <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+    </svg>
+  </div>
+
+  <!-- Total Events -->
+  <div class="glass-card stat-card stat-card-tech interactive">
+    <div class="stat-label">Total Events</div>
+    <div class="stat-value"><%= totalEvents %></div>
+    <div class="stat-meta">Created Events</div>
+    <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"></path>
+    </svg>
+  </div>
+
+  <!-- Total Hours Logged -->
+  <div class="glass-card stat-card stat-card-medical interactive">
+    <div class="stat-label">Total Hours Logged</div>
+    <div class="stat-value"><%= totalHours %></div>
+    <div class="stat-meta">Hours Worked</div>
+    <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+  </div>
+
+  <!-- Completion Rate -->
+  <div class="glass-card stat-card stat-card-teaching interactive">
+    <div class="stat-label">Completion Rate</div>
+    <div class="stat-value"><%= completionRate %>%</div>
+    <div class="stat-meta">Completed/Total Ratio</div>
+    <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+  </div>
+</div>
+
+<!-- Main Statistics Breakdown Section -->
+<div class="reports-dashboard-grid animate-fade-in" style="margin-bottom: 2.5rem;">
+  
+  <!-- Skill Distribution Card -->
+  <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;">
+    <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Skills Demand & Distribution</h2>
+    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.5rem; align-items: center;">
+      <div style="position: relative; height: 240px; width: 100%;">
+        <canvas id="skillsChart"></canvas>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <% 
+          const skillColorsMap = {
+            'Teaching': '#6366f1',
+            'Medical': '#10b981',
+            'Tech': '#3b82f6',
+            'Construction': '#f59e0b',
+            'Cooking': '#ef4444',
+            'Logistics': '#8b5cf6'
+          };
+          Object.keys(skillStats).forEach(function(skill) { 
+            const count = skillStats[skill] || 0;
+        %>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; display: inline-block; background-color: <%= skillColorsMap[skill] %>;"></span>
+              <span style="font-weight: 600;"><%= skill %></span>
+            </div>
+            <span style="font-weight: 700; color: var(--text-muted);"><%= count %></span>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Availability & Cities Demographics Card -->
+  <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.5rem; justify-content: space-between;">
+    <div>
+      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">Availability Schedule</h2>
+      <div style="position: relative; height: 130px; width: 100%;">
+        <canvas id="availabilityChart"></canvas>
+      </div>
+    </div>
+
+    <div style="border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">Top Geographic Distribution</h2>
+      <div style="position: relative; height: 150px; width: 100%;">
+        <canvas id="citiesChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Registrations Table -->
+<div class="glass-card animate-fade-in">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 700;">Recent Registrations</h2>
+    <a href="/admin/volunteers" style="font-size: 0.875rem; color: var(--accent-color); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+      <span>Manage All</span>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+  </div>
+
+  <% if (recentVolunteers && recentVolunteers.length > 0) { %>
+    <div class="table-wrapper">
+      <table class="glass-table">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>City</th>
+            <th>Skills</th>
+            <th>Availability</th>
+            <th>Status</th>
+            <th style="width: 100px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentVolunteers.forEach(function(volunteer) { %>
+            <tr>
+              <td style="font-weight: 600;"><%= volunteer.fullName %></td>
+              <td><%= volunteer.email %></td>
+              <td><%= volunteer.city %></td>
+              <td>
+                <span style="font-size: 0.8125rem; background: rgba(255, 255, 255, 0.05); padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-glass);">
+                  <%= (volunteer.skills || []).slice(0, 2).join(', ') %><%= (volunteer.skills || []).length > 2 ? '...' : '' %>
+                </span>
+              </td>
+              <td><%= volunteer.availability %></td>
+              <td>
+                <span class="badge badge-<%= (volunteer.status || 'Pending').toLowerCase() %>">
+                  <%= volunteer.status || 'Pending' %>
+                </span>
+              </td>
+              <td class="actions-cell">
+                <a href="/admin/volunteers/<%= volunteer.id %>" class="btn-icon btn-icon-view" data-tooltip="View Details" aria-label="View volunteer details">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <!-- Empty State Illustration & CTA -->
+    <div class="empty-state">
+      <svg class="empty-illustration" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+      </svg>
+      <h3 class="empty-title">No volunteers registered yet</h3>
+      <p class="empty-desc">Get started by sharing the registration link to gather volunteer submissions.</p>
+      <a href="/volunteer/register" target="_blank" class="btn-cta">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Open Public Form</span>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<!-- Hidden element for passing data securely to client-side JS -->
+<div id="dashboardStatsData" style="display: none;"
+     data-skills="<%= JSON.stringify(skillStats) %>"
+     data-cities="<%= JSON.stringify(cityStats) %>"
+     data-availability="<%= JSON.stringify(availabilityStats) %>">
+</div>
+
+<!-- Chart.js and Dashboard Init Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inject server-side data variables securely
+    const dataContainer = document.getElementById('dashboardStatsData');
+    const rawSkillStats = JSON.parse(dataContainer.dataset.skills || '{}');
+    const rawCityStats = JSON.parse(dataContainer.dataset.cities || '[]');
+    const rawAvailabilityStats = JSON.parse(dataContainer.dataset.availability || '{}');
+
+    const colors = {
+      indigo: '#6366f1',
+      violet: '#8b5cf6',
+      blue: '#3b82f6',
+      cyan: '#06b6d4',
+      emerald: '#10b981',
+      amber: '#f59e0b',
+      rose: '#ef4444',
+      textMuted: '#94a3b8',
+      textMain: '#f8fafc',
+      borderGlass: 'rgba(255, 255, 255, 0.08)'
+    };
+
+    // Global defaults configuration
+    Chart.defaults.color = colors.textMuted;
+    Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
+    Chart.defaults.font.size = 11;
+    Chart.defaults.font.weight = '500';
+
+    // 1. Skills Chart
+    const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+    const skillColorsMap = {
+      'Teaching': colors.indigo,
+      'Medical': colors.emerald,
+      'Tech': colors.blue,
+      'Construction': colors.amber,
+      'Cooking': colors.rose,
+      'Logistics': colors.violet
+    };
+
+    const skillLabels = Object.keys(rawSkillStats);
+    const skillCounts = Object.values(rawSkillStats);
+    const skillColors = skillLabels.map(label => skillColorsMap[label] || colors.indigo);
+
+    new Chart(skillsCtx, {
+      type: 'doughnut',
+      data: {
+        labels: skillLabels,
+        datasets: [{
+          data: skillCounts,
+          backgroundColor: skillColors,
+          borderWidth: 0,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: colors.textMain,
+            bodyColor: colors.textMain,
+            borderColor: colors.borderGlass,
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+            displayColors: true
+          }
+        },
+        cutout: '72%'
+      }
+    });
+
+    // 2. Availability Chart
+    const availCtx = document.getElementById('availabilityChart').getContext('2d');
+    const availLabels = Object.keys(rawAvailabilityStats);
+    const availCounts = Object.values(rawAvailabilityStats);
+
+    new Chart(availCtx, {
+      type: 'pie',
+      data: {
+        labels: availLabels,
+        datasets: [{
+          data: availCounts,
+          backgroundColor: [colors.indigo, colors.cyan, colors.violet],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: colors.textMuted,
+              boxWidth: 12,
+              padding: 12
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: colors.textMain,
+            bodyColor: colors.textMain,
+            borderColor: colors.borderGlass,
+            borderWidth: 1,
+            padding: 8,
+            cornerRadius: 6
+          }
+        }
+      }
+    });
+
+    // 3. Top Cities Chart
+    const citiesCtx = document.getElementById('citiesChart').getContext('2d');
+    const cityLabels = rawCityStats.map(c => c._id);
+    const cityCounts = rawCityStats.map(c => c.count);
+
+    new Chart(citiesCtx, {
+      type: 'bar',
+      data: {
+        labels: cityLabels,
+        datasets: [{
+          data: cityCounts,
+          backgroundColor: colors.cyan,
+          borderRadius: 4,
+          borderWidth: 0,
+          barThickness: 12
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: colors.textMain,
+            bodyColor: colors.textMain,
+            borderColor: colors.borderGlass,
+            borderWidth: 1
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.04)', drawBorder: false },
+            ticks: { precision: 0, color: colors.textMuted }
+          },
+          y: {
+            grid: { display: false, drawBorder: false },
+            ticks: { color: colors.textMuted }
+          }
+        }
+      }
+    });
+  });
+</script>
+
+<%- include('../layouts/footer') %>

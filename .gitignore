@@ -141,3 +141,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Custom Project Uploads
+public/uploads/*
+!public/uploads/.gitkeep

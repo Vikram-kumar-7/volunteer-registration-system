@@ -1,0 +1,63 @@
+<%- include('../partials/head') %>
+
+<!-- Standalone Flash Messages for Login/Register Pages -->
+<% if (success_msg && success_msg.length > 0) { %>
+  <div class="flash-message flash-message-success">
+    <span class="flash-message-content"><%= success_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<% if (error_msg && error_msg.length > 0) { %>
+  <div class="flash-message flash-message-error">
+    <span class="flash-message-content"><%= error_msg %></span>
+    <button class="flash-dismiss-btn" aria-label="Dismiss message">&times;</button>
+  </div>
+<% } %>
+
+<div class="split-container">
+  <!-- Left Column -->
+  <div class="split-left">
+    <div class="illustration-wrapper">
+      <svg class="illustration-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="50" stroke="url(#indigoGradient)" stroke-width="2" stroke-dasharray="4 4"/>
+        <path d="M75 100l15 15 35-35" stroke="var(--accent-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="100" cy="100" r="24" stroke="url(#cyanGradient)" stroke-width="1.5"/>
+      </svg>
+      <h1 class="illustration-title">Set New Password</h1>
+      <p class="illustration-desc">Configure a new, strong password below to regain full administrative or volunteer account access.</p>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="split-right">
+    <div class="auth-form-card glass-card">
+      <div class="auth-header">
+        <h2 class="auth-title">Reset Password</h2>
+        <p class="auth-subtitle">Enter your new credentials</p>
+      </div>
+
+      <form action="/reset/<%= token %>" method="POST">
+        <!-- New Password Input -->
+        <div class="form-group floating" style="margin-bottom: 1.5rem;">
+          <input type="password" name="password" id="password" class="form-input" required minlength="6">
+          <label for="password">New Password (min 6 chars)</label>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="form-group floating" style="margin-bottom: 2rem;">
+          <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" required minlength="6">
+          <label for="confirmPassword">Confirm Password</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">
+          <span>Update Password</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
